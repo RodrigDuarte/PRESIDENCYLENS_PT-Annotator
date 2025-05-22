@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PresidencyLens</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}" />
+  </head>
+
+  <body class="flex h-screen w-screen flex-col">
+    <div class="flex w-full shrink grow flex-col overflow-hidden">
+      <!-- Navbar -->
+      {% with navPage="/" %} {% include "navbar.html" %} {%endwith %}
+      <div class="bg-blanc-200 dark:bg-noir-500 flex w-full flex-grow flex-col items-center justify-center overflow-hidden text-black dark:text-white">
+        <div class="mx-auto mt-2 mb-4 w-2/4">
+          <label for="query-search" class="sr-only mb-2 text-sm font-medium text-gray-900 dark:text-white">Search</label>
+          <div class="relative">
+            <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+              <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="search-input"
+              class="focus:ring-blanc-500 focus:border-blanc-500 dark:bg-noir-700 dark:border-noir-600 dark:placeholder-noir-400 dark:focus:ring-noir-500 dark:focus:border-noir-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 dark:text-white"
+              placeholder="Insert your query..."
+              required
+            />
+            <button
+              type="submit"
+              id="search-submit"
+              class="bg-blanc-400 hover:bg-noir-200 focus:ring-blank-300 dark:bg-noir-600 dark:hover:bg-noir-700 dark:focus:ring-noir-800 absolute end-2.5 bottom-2.5 rounded-lg px-4 py-2 text-sm font-medium text-white focus:ring-4 focus:outline-none"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+        <div
+          class="bg-noir-200/50 mx-auto mb-4 grid h-0 w-7/8 grid-cols-3 gap-4 overflow-y-scroll rounded-lg p-2 opacity-0 transition-all duration-1000 ease-in-out md:grid-cols-3"
+          id="query-results"
+        ></div>
+        <!--Extra large modal-->
+        <div id="query-modal" tabindex="-1" class="fixed top-0 left-0 z-50 hidden h-full w-full overflow-x-hidden overflow-y-auto p-4 md:inset-0">
+          <!-- Modal content -->
+          <div class="dark:bg-noir-700 m-auto flex h-full w-full shrink-0 grow-0 basis-auto flex-col overflow-hidden rounded-lg bg-white shadow-sm">
+            <!-- Modal header -->
+            <div class="dark:border-noir-600 flex h-10 shrink-0 grow-0 basis-auto items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5">
+              <h3 class="text-xl font-medium text-gray-900 dark:text-white" id="query-modal-title"></h3>
+              <button
+                type="button"
+                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="query-modal"
+              >
+                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+                <span class="sr-only">Close modal</span>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <div class="flex w-full shrink grow basis-auto flex-col items-center justify-start overflow-scroll p-4 md:p-5" id="query-modal-body"></div>
+          </div>
+        </div>
+        <!-- Debug Overlay -->
+      </div>
+    </div>
+
+    <div class="hidden top-0 left-0 z-50 p-4 pt-20" id="model-overlay">
+      <div class="bg-noir-700 rounded-lg p-2">
+        <h3 class="text-lg font-bold text-white">Model Overlay</h3>
+        <hr class="bg-noir-600 dark:bg-noir-100 my-1 h-px border-0" />
+        <div class="flex flex-col" id="model-list">
+
+        </div>
+        <!-- <div class="flex flex-row items-center justify-start gap-2">
+        <div class="h-5 w-5 rounded-lg cursor-pointer bg-red-500"></div>
+        <span class="text-white">Model 1 - The model that came first</span>
+      </div> -->
+      </div>
+    </div>
+
+  </body>
+</html>

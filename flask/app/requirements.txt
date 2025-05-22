@@ -1,0 +1,12 @@
+redis
+Flask
+flask-cors
+Authlib
+python-dotenv
+PyJWT
+werkzeug
+blinker
+jinja2
+itsdangerous
+cryptography
+requests

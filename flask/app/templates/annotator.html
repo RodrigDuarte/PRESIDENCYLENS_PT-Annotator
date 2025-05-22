@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PresidencyLens - Annotation tool</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/output.css')}}" />
+  </head>
+  <body>
+    <div class="flex h-screen w-screen flex-col items-center justify-center">
+      <!-- Navbar -->
+      {% with navPage='/annotation' %} {% include 'navbar.html' %} {%endwith %}
+      <div class="flex w-full shrink grow flex-col items-center justify-center bg-[#2c2c2c] text-white">
+        <!-- Modal -->
+        <div
+          data-twe-modal-init
+          class="fixed top-0 right-0 left-0 z-[1055] hidden h-full w-full overflow-x-hidden overflow-y-auto p-4 outline-none"
+          id="annotation-modal"
+          tabindex="-1"
+          aria-labelledby="annotation-modal-label"
+          aria-hidden="true"
+        >
+          <div data-twe-modal-dialog-ref class="pointer-events-none relative m-auto h-full w-4/5 opacity-0 transition-all duration-300 ease-in-out md:w-1/2">
+            <div
+              class="shadow-4 dark:bg-surface-dark dark:bg-noir-600 pointer-events-auto relative flex max-h-[100%] w-full flex-col overflow-hidden rounded-md border-none bg-white bg-clip-padding text-current outline-none"
+            >
+              <div class="flex flex-shrink-0 items-center justify-between rounded-t-md border-b-2 border-neutral-100 p-4 dark:border-white/10">
+                <!-- Modal title -->
+                <h5 class="text-surface text-xl leading-normal font-medium dark:text-white" id="annotation-modal-label">Modal title</h5>
+                <!-- Close button -->
+                <button
+                  type="button"
+                  class="box-content rounded-none border-none text-neutral-500 hover:text-neutral-800 hover:no-underline focus:text-neutral-800 focus:opacity-100 focus:shadow-none focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-300 dark:focus:text-neutral-300"
+                  data-twe-modal-dismiss
+                  aria-label="Close"
+                >
+                  <span class="[&>svg]:h-6 [&>svg]:w-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+
+              <!-- Modal body -->
+              <div class="relative w-full !max-w-none overflow-y-auto p-4" id="modal-body"></div>
+              <!-- Modal footer -->
+              <div class="flex flex-shrink-0 flex-wrap items-center justify-end rounded-b-md border-t-2 border-neutral-100 p-4 dark:border-white/10">
+                <!-- <button
+                  type="button"
+                  class="bg-primary shadow-primary-3 hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 active:bg-primary-600 active:shadow-primary-2 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong ms-1 inline-block rounded px-6 pt-2.5 pb-2 text-xs leading-normal font-medium text-white uppercase transition duration-150 ease-in-out focus:ring-0 focus:outline-none dark:shadow-black/30"
+                  data-twe-ripple-init
+                  data-twe-ripple-color="light"
+                >
+                  Save changes
+                </button> -->
+                <!-- Checkbox for do not show again -->
+                <div class="flex items-center">
+                  <input type="checkbox" id="modal-checkbox" class="mr-2" />
+                  <label for="modal-checkbox" class="text-sm text-gray-700 dark:text-gray-300"> Do not show again </label>
+                </div>
+                <button
+                  type="button"
+                  class="bg-primary-100 text-primary-700 hover:bg-primary-accent-200 focus:bg-primary-accent-200 active:bg-primary-accent-200 dark:bg-primary-300 dark:hover:bg-primary-400 dark:focus:bg-primary-400 dark:active:bg-primary-400 inline-block rounded px-6 pt-2.5 pb-2 text-xs leading-normal font-medium uppercase transition duration-150 ease-in-out focus:ring-0 focus:outline-none"
+                  data-twe-modal-dismiss
+                  data-twe-ripple-init
+                  data-twe-ripple-color="light"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="mx-auto flex w-full shrink grow flex-col justify-start rounded-lg bg-gray-800 p-4 shadow-md">
+          <!-- Query Input -->
+          <div class="mb-4 flex flex-row h-10 gap-1 w-full shrink-0 grow-0 rounded-lg bg-gray-700 p-2 text-white placeholder-gray-400">
+            Query: <div id="query"></div>
+          </div>
+
+          <!-- Image Section -->
+          <div
+            class="mb-4 flex h-full w-full shrink grow basis-auto flex-col items-center justify-center overflow-hidden rounded-lg bg-gray-600 p-2"
+            style="width: 100%; height: 300px; overflow: hidden"
+          >
+            <img src="" alt="Article Image" class="max-h-full max-w-full rounded-lg object-cover" id="image" />
+          </div>
+
+          <!-- Article Title -->
+          <div class="mb-4 flex h-10 w-full gap-1 shrink-0 grow-0 flex-row rounded-lg bg-gray-700 p-2 text-white placeholder-gray-400">
+            Article Title: <div id="article-title"></div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="mb-4 flex h-5 w-full shrink-0 grow-0 rounded-lg bg-gray-200 dark:bg-gray-700">
+            <div class="h-5 rounded-lg bg-blue-600 dark:bg-blue-500" style="width: 0%" id="progress-bar"></div>
+          </div>
+
+          <!-- Buttons Section -->
+          <div class="mt-4 flex w-full shrink-0 grow-0 flex-row items-center justify-center gap-5">
+            <button class="cursor-pointer rounded-lg bg-red-500 px-4 py-2 text-white" id="btn-irrelevant">Irrelevant (I)</button>
+            <button class="cursor-pointer rounded-lg bg-gray-600 px-4 py-2 text-white" id="btn-undo">Undo (Z)</button>
+            <button class="cursor-pointer rounded-lg bg-green-600 px-4 py-2 text-white" id="btn-relevant">Relevant (R)</button>
+            <!-- <button
+              class="px-2 py-2 bg-grey-400 text-white rounded-lg cursor-pointer"
+              id="btn-help" data-modal-target="initialize-modal-{{ custonId }}" >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+              </svg>
+            </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if markdown %}
+    <script>
+      const markdown = '{{markdown}}';
+    </script>
+    {% endif %}
+
+    <script src="{{ url_for('static', filename='js/annotation.js') }}"></script>
+  </body>
+</html>

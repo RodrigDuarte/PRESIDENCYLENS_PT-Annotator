@@ -1,0 +1,33 @@
+---
+name: PL_Annotator
+
+services:
+
+  # Redis Container
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis-temp
+
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - ./redis/data:/data
+    restart: unless-stopped
+
+  # Flask Container
+  flask:
+    build: ./flask/build/
+    container_name: flask-temp
+
+    ports:
+      - "39082:5000"
+    volumes:
+      - ./flask/app:/code
+      - ./images:/root/images
+    restart: unless-stopped
+
+    env_file: ./.env
+
+    stop_signal: SIGINT
+    pull_policy: build
